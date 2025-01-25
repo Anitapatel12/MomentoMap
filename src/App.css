@@ -50,10 +50,20 @@ html, body {
 
 /* Ensure map container takes the full height and width */
 .map-container {
-  width: 100%;
-  height: 100vh; /* Full viewport height */
-  position: absolute; /* Make sure it stretches across the whole page */
+  position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0; /* Map container */
 }
 
+/* Make sure the markers are on top of the map */
+.leaflet-marker-pane {
+  z-index: 1000; /* Ensure markers appear above the map tiles */
+}
+
+/* Ensure popups are on top of other map elements */
+.leaflet-popup {
+  z-index: 2000; /* Popups should appear above markers */
+}
