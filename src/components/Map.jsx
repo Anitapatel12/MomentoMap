@@ -126,12 +126,13 @@ const Map = () => {
     };
 
     const handleMarkerClick = (marker) => {
-        const memory = memories.find((mem) => mem.marker === marker);
-        if (memory) {
-            // If memory exists, show the note in the popup
-            marker.bindPopup(`<div style="max-width: 200px;"><b>${memory.note}</b></div>`).openPopup();
+        const existingMemory = memories.find((mem) => mem.marker === marker);
+        if (existingMemory) {
+            // If memory exists, show the existing memory in the popup
+            setActiveMarker(marker);
+            setShowMemoryPopup(true);
         } else {
-            // If no memory exists, open the MemoryPopup
+            // If no memory exists, open a new MemoryPopup
             setActiveMarker(marker);
             setShowMemoryPopup(true);
         }
@@ -143,34 +144,32 @@ const Map = () => {
     };
 
     const saveMemory = (memory) => {
-        setMemoryCount((prev) => prev + 1); // Increment memory count for the current memory
-        const memoryNumber = memoryCount + 1; // Get the current memory number
+        // If it's a new memory, assign a number to it
+        let memoryNumber;
+        if (!memory.number) {  // Check if this memory doesn't have a number yet
+            memoryNumber = memoryCount + 1;  // Get the current memory count
+            setMemoryCount((prev) => prev + 1);  // Increment the memory count
+        } else {
+            memoryNumber = memory.number;  // If memory already has a number, use it
+        }
 
-        // Add the new memory with the photo and memory number
-        setMemories((prev) => {
-            const existingMemory = prev.find((mem) => mem.marker === memory.marker);
-            if (existingMemory) {
-                // Update existing memory
-                return prev.map((mem) =>
-                    mem.marker === memory.marker ? { ...mem, note: memory.note, photos: memory.photos } : mem
-                );
-            } else {
-                // Add new memory with a unique number
-                return [...prev, { ...memory, number: memoryNumber }];
-            }
-        });
+        // Save the memory with the fixed number
+        setMemories((prev) => [
+            ...prev,
+            { ...memory, number: memoryNumber }  // Store memory number
+        ]);
 
         setShowMemoryPopup(false);
 
         // Handle the photo for the square marker
         const photoUrl = memory.photos.length > 0 ? URL.createObjectURL(memory.photos[0]) : '';
 
-        // Create the memory icon with the photo and memory number outside the photo
+        // Create the memory icon with the photo and memory number
         const memoryIcon = L.divIcon({
             className: 'custom-icon',
             html: `
                 <div class="map-photo" style="background-image: url(${photoUrl});">
-                    <div class="memory-number">${memoryNumber}</div>
+                    <div class="memory-number">${memoryNumber}</div> <!-- Always use memoryNumber -->
                 </div>`,
         });
 
@@ -222,7 +221,8 @@ const Map = () => {
                 <MemoryPopup
                     marker={activeMarker}
                     onClose={closeMemoryPopup}
-                    onSaveMemory={saveMemory} // Pass saveMemory to MemoryPopup
+                    onSaveMemory={saveMemory}
+                    existingMemory={memories.find((mem) => mem.marker === activeMarker)} // Pass existing memory data
                 />
             )}
         </div>
