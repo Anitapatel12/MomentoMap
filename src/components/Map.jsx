@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
+import MemoryPopup from './MemoryPopup'; // Import MemoryPopup
 
 const Map = () => {
     const mapContainer = useRef(null);
@@ -11,6 +12,10 @@ const Map = () => {
     const [routeLayer, setRouteLayer] = useState(null);
     const [distance, setDistance] = useState('');
     const [searchedLocations, setSearchedLocations] = useState([]);
+    const [activeMarker, setActiveMarker] = useState(null); // Track marker for adding/editing memory
+    const [showMemoryPopup, setShowMemoryPopup] = useState(false); // Toggle memory popup
+    const [memories, setMemories] = useState([]); // Track all saved memories
+    const [memoryCount, setMemoryCount] = useState(0); // Track the number of memories
 
     useEffect(() => {
         if (mapContainer.current && !mapInstance.current) {
@@ -38,7 +43,7 @@ const Map = () => {
                 mapInstance.current.setView([lat, lon], 10);
 
                 const marker = L.marker([lat, lon], { draggable: true }).addTo(mapInstance.current);
-                marker.bindPopup(`Search Result: ${searchQuery}`).openPopup();
+                marker.on('click', () => handleMarkerClick(marker)); // Attach marker click event
 
                 setMarkers((prev) => [...prev, marker]);
                 setSearchedLocations((prev) => [...prev, { lat, lon }]); // Track searched locations
@@ -51,19 +56,25 @@ const Map = () => {
     };
 
     const clearMap = () => {
-        markers.forEach((marker) => {
-            mapInstance.current.removeLayer(marker);
-        });
+        const isConfirmed = window.confirm('Are you sure you want to clear all markers? This will remove all the memories you have saved on the map.');
 
-        if (routeLayer) {
-            mapInstance.current.removeLayer(routeLayer);
-            setRouteLayer(null);
+        if (isConfirmed) {
+            markers.forEach((marker) => {
+                mapInstance.current.removeLayer(marker);
+            });
+
+            if (routeLayer) {
+                mapInstance.current.removeLayer(routeLayer);
+                setRouteLayer(null);
+            }
+
+            setDistance('');
+            setSearchedLocations([]);
+            setMarkers([]);
+            setMemories([]); // Clear memories
+            setMemoryCount(0); // Reset memory count
+            mapInstance.current.setView([51.505, -0.09], 5); // Reset map view
         }
-
-        setDistance('');
-        setSearchedLocations([]);
-        setMarkers([]);
-        mapInstance.current.setView([51.505, -0.09], 5); // Reset map view
     };
 
     const calculateRoute = async () => {
@@ -72,7 +83,6 @@ const Map = () => {
             return;
         }
 
-        // Get the last two searched locations
         const start = searchedLocations[searchedLocations.length - 2];
         const end = searchedLocations[searchedLocations.length - 1];
 
@@ -108,11 +118,70 @@ const Map = () => {
 
             const marker = L.marker([lat, lng], { draggable: true }).addTo(mapInstance.current);
 
-            marker.bindPopup('You are here!').openPopup();
+            marker.on('click', () => handleMarkerClick(marker)); // Attach marker click event
+
             setMarkers((prev) => [...prev, marker]);
             setSearchedLocations((prev) => [...prev, { lat, lon: lng }]);
         });
     };
+
+    const handleMarkerClick = (marker) => {
+        const memory = memories.find((mem) => mem.marker === marker);
+        if (memory) {
+            // If memory exists, show the note in the popup
+            marker.bindPopup(`<div style="max-width: 200px;"><b>${memory.note}</b></div>`).openPopup();
+        } else {
+            // If no memory exists, open the MemoryPopup
+            setActiveMarker(marker);
+            setShowMemoryPopup(true);
+        }
+    };
+
+    const closeMemoryPopup = () => {
+        setShowMemoryPopup(false);
+        setActiveMarker(null); // Clear active marker
+    };
+
+    const saveMemory = (memory) => {
+        setMemoryCount((prev) => prev + 1); // Increment memory count for the current memory
+        const memoryNumber = memoryCount + 1; // Get the current memory number
+
+        // Add the new memory with the photo and memory number
+        setMemories((prev) => {
+            const existingMemory = prev.find((mem) => mem.marker === memory.marker);
+            if (existingMemory) {
+                // Update existing memory
+                return prev.map((mem) =>
+                    mem.marker === memory.marker ? { ...mem, note: memory.note, photos: memory.photos } : mem
+                );
+            } else {
+                // Add new memory with a unique number
+                return [...prev, { ...memory, number: memoryNumber }];
+            }
+        });
+
+        setShowMemoryPopup(false);
+
+        // Handle the photo for the square marker
+        const photoUrl = memory.photos.length > 0 ? URL.createObjectURL(memory.photos[0]) : '';
+
+        // Create the memory icon with the photo and memory number outside the photo
+        const memoryIcon = L.divIcon({
+            className: 'custom-icon',
+            html: `
+                <div class="map-photo" style="background-image: url(${photoUrl});">
+                    <div class="memory-number">${memoryNumber}</div>
+                </div>`,
+        });
+
+        memory.marker.setIcon(memoryIcon);
+
+        // Display the note as a popup when the marker is clicked
+        if (memory.note) {
+            memory.marker.bindPopup(`<b>${memory.note}</b>`).openPopup();
+        }
+    };
+
 
     return (
         <div className="map-wrapper">
@@ -148,6 +217,14 @@ const Map = () => {
                     zIndex: 1,
                 }}
             ></div>
+
+            {showMemoryPopup && activeMarker && (
+                <MemoryPopup
+                    marker={activeMarker}
+                    onClose={closeMemoryPopup}
+                    onSaveMemory={saveMemory} // Pass saveMemory to MemoryPopup
+                />
+            )}
         </div>
     );
 };
