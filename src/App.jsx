@@ -1,13 +1,15 @@
-import React from 'react';
-import Map from './components/Map';
-import 'leaflet/dist/leaflet.css'; // Ensure this is at the top of your main entry file
-// Make sure the path is correct
+import { Routes, Route } from "react-router-dom";
+import Landing from "./components/Landing";
+import Map from "./components/Map";
+import SignIn from "./components/SignIn";
 
 function App() {
   return (
-    <div className="App">
-      <Map /> {/* This should render the map */}
-    </div>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/dashboard" element={<Map />} /> {/* Ensure this is the correct path */}
+    </Routes>
   );
 }
 
