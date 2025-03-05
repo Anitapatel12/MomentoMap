@@ -8,7 +8,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/signin" element={<SignIn />} />
-      <Route path="/dashboard" element={<Map />} /> {/* Ensure this is the correct path */}
+      <Route path="/signin/sso-callback" element={<Map />} />  {/* 👈 Show Map here */}
+      <Route path="/dashboard" element={<Map />} />
     </Routes>
   );
 }

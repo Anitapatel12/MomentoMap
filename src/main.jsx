@@ -5,12 +5,12 @@ import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
 
-// ✅ Use Only the Clerk Publishable Key (Remove Secret Key)
+// ✅ Clerk Publishable Key (Do NOT include Secret Key)
 const clerkPubKey = "pk_test_ZnVubnktYmVldGxlLTIxLmNsZXJrLmFjY291bnRzLmRldiQ";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ClerkProvider publishableKey={clerkPubKey}>
-    <BrowserRouter> {/* ✅ Only one BrowserRouter */}
+    <BrowserRouter>
       <React.StrictMode>
         <App />
       </React.StrictMode>
