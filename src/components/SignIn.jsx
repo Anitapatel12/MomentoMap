@@ -8,7 +8,6 @@ const SignInPage = () => {
     const { isSignedIn } = useSignIn();
     const navigate = useNavigate();
 
-    // 🔥 Redirect manually after sign-in
     useEffect(() => {
         if (isSignedIn) {
             navigate("/dashboard");
@@ -22,7 +21,6 @@ const SignInPage = () => {
                 <h2>Welcome to our platform!</h2>
                 <p>Where your memories, beautifully mapped.</p>
 
-                {/* No need for afterSignInUrl now */}
                 <SignIn path="/signin" routing="path" />
             </div>
         </div>

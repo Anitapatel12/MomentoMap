@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
-import MemoryPopup from './MemoryPopup'; // Import MemoryPopup
+import MemoryPopup from './MemoryPopup';
 
 const Map = () => {
     const mapContainer = useRef(null);
@@ -12,10 +12,10 @@ const Map = () => {
     const [routeLayer, setRouteLayer] = useState(null);
     const [distance, setDistance] = useState('');
     const [searchedLocations, setSearchedLocations] = useState([]);
-    const [activeMarker, setActiveMarker] = useState(null); // Track marker for adding/editing memory
-    const [showMemoryPopup, setShowMemoryPopup] = useState(false); // Toggle memory popup
-    const [memories, setMemories] = useState([]); // Track all saved memories
-    const [memoryCount, setMemoryCount] = useState(0); // Track the number of memories
+    const [activeMarker, setActiveMarker] = useState(null);
+    const [showMemoryPopup, setShowMemoryPopup] = useState(false);
+    const [memories, setMemories] = useState([]);
+    const [memoryCount, setMemoryCount] = useState(0);
 
     useEffect(() => {
         if (mapContainer.current && !mapInstance.current) {
@@ -43,10 +43,10 @@ const Map = () => {
                 mapInstance.current.setView([lat, lon], 10);
 
                 const marker = L.marker([lat, lon], { draggable: true }).addTo(mapInstance.current);
-                marker.on('click', () => handleMarkerClick(marker)); // Attach marker click event
+                marker.on('click', () => handleMarkerClick(marker));
 
                 setMarkers((prev) => [...prev, marker]);
-                setSearchedLocations((prev) => [...prev, { lat, lon }]); // Track searched locations
+                setSearchedLocations((prev) => [...prev, { lat, lon }]);
             } else {
                 alert('Location not found.');
             }
@@ -71,9 +71,9 @@ const Map = () => {
             setDistance('');
             setSearchedLocations([]);
             setMarkers([]);
-            setMemories([]); // Clear memories
-            setMemoryCount(0); // Reset memory count
-            mapInstance.current.setView([51.505, -0.09], 5); // Reset map view
+            setMemories([]);
+            setMemoryCount(0);
+            mapInstance.current.setView([51.505, -0.09], 5);
         }
     };
 
@@ -118,7 +118,7 @@ const Map = () => {
 
             const marker = L.marker([lat, lng], { draggable: true }).addTo(mapInstance.current);
 
-            marker.on('click', () => handleMarkerClick(marker)); // Attach marker click event
+            marker.on('click', () => handleMarkerClick(marker));
 
             setMarkers((prev) => [...prev, marker]);
             setSearchedLocations((prev) => [...prev, { lat, lon: lng }]);
@@ -128,11 +128,10 @@ const Map = () => {
     const handleMarkerClick = (marker) => {
         const existingMemory = memories.find((mem) => mem.marker === marker);
         if (existingMemory) {
-            // If memory exists, show the existing memory in the popup
+
             setActiveMarker(marker);
             setShowMemoryPopup(true);
         } else {
-            // If no memory exists, open a new MemoryPopup
             setActiveMarker(marker);
             setShowMemoryPopup(true);
         }
@@ -140,31 +139,27 @@ const Map = () => {
 
     const closeMemoryPopup = () => {
         setShowMemoryPopup(false);
-        setActiveMarker(null); // Clear active marker
+        setActiveMarker(null);
     };
 
     const saveMemory = (memory) => {
-        // If it's a new memory, assign a number to it
         let memoryNumber;
-        if (!memory.number) {  // Check if this memory doesn't have a number yet
-            memoryNumber = memoryCount + 1;  // Get the current memory count
-            setMemoryCount((prev) => prev + 1);  // Increment the memory count
+        if (!memory.number) {
+            memoryNumber = memoryCount + 1;
+            setMemoryCount((prev) => prev + 1);
         } else {
-            memoryNumber = memory.number;  // If memory already has a number, use it
+            memoryNumber = memory.number;
         }
 
-        // Save the memory with the fixed number
         setMemories((prev) => [
             ...prev,
-            { ...memory, number: memoryNumber }  // Store memory number
+            { ...memory, number: memoryNumber }
         ]);
 
         setShowMemoryPopup(false);
 
-        // Handle the photo for the square marker
         const photoUrl = memory.photos.length > 0 ? URL.createObjectURL(memory.photos[0]) : '';
 
-        // Create the memory icon with the photo and memory number
         const memoryIcon = L.divIcon({
             className: 'custom-icon',
             html: `
@@ -175,7 +170,6 @@ const Map = () => {
 
         memory.marker.setIcon(memoryIcon);
 
-        // Display the note as a popup when the marker is clicked
         if (memory.note) {
             memory.marker.bindPopup(`<b>${memory.note}</b>`).openPopup();
         }
@@ -223,7 +217,7 @@ const Map = () => {
                     marker={activeMarker}
                     onClose={closeMemoryPopup}
                     onSaveMemory={saveMemory}
-                    existingMemory={memories.find((mem) => mem.marker === activeMarker)} // Pass existing memory data
+                    existingMemory={memories.find((mem) => mem.marker === activeMarker)}
                 />
             )}
         </div>

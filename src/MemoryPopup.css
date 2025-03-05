@@ -12,7 +12,6 @@
     z-index: 1000;
 }
 
-/* Memory Popup */
 .memory-popup {
     background: #ffffff;
     border-radius: 12px;
@@ -22,14 +21,12 @@
     text-align: center;
 }
 
-/* Popup Heading */
 .memory-popup h2 {
     margin-bottom: 15px;
     font-size: 1.5rem;
     color: #333;
 }
 
-/* Textarea for note */
 .memory-popup textarea {
     width: 100%;
     height: 80px;
@@ -46,7 +43,6 @@
     border-color: #4caf50;
 }
 
-/* Photo preview section */
 .photos-preview {
     display: flex;
     gap: 10px;
@@ -63,7 +59,6 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* File input styling */
 #file-input {
     display: none;
 }
@@ -84,7 +79,6 @@
     background-color: #45a049;
 }
 
-/* Buttons for saving or canceling */
 .memory-popup-buttons {
     display: flex;
     justify-content: space-between;
@@ -113,7 +107,6 @@
     background-color: #e53935;
 }
 
-/* Style for custom square markers with slightly rounded edges */
 .map-photo {
     width: 40px;
     height: 40px;
@@ -121,19 +114,18 @@
     background-position: center;
     border: 2px solid white;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;  /* Slightly rounded edges */
+    border-radius: 8px;  
     position: relative;
 }
 
-/* Memory number badge for markers */
 .memory-number {
     position: absolute;
-    top: -5px;  /* Moves the number above the square */
-    left: 50%;  /* Centers it horizontally */
-    transform: translateX(-50%); /* Ensure it's centered */
+    top: -5px; 
+    left: 50%;  
+    transform: translateX(-50%); 
     width: 20px;
     height: 20px;
-    background-color: #007bff; /* Blue color */
+    background-color: #007bff; 
     color: white;
     font-size: 12px;
     font-weight: bold;

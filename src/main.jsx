@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
 
-// ✅ Clerk Publishable Key (Do NOT include Secret Key)
 const clerkPubKey = "pk_test_ZnVubnktYmVldGxlLTIxLmNsZXJrLmFjY291bnRzLmRldiQ";
 
 ReactDOM.createRoot(document.getElementById('root')).render(

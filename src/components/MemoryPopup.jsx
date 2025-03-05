@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../MemoryPopup.css'; // Add a dedicated CSS file for styling
+import '../MemoryPopup.css';
 
 const MemoryPopup = ({ marker, onClose, onSaveMemory, existingMemory }) => {
     const [note, setNote] = useState(existingMemory?.note || '');
@@ -8,13 +8,13 @@ const MemoryPopup = ({ marker, onClose, onSaveMemory, existingMemory }) => {
     useEffect(() => {
         if (existingMemory) {
             setNote(existingMemory.note || '');
-            setPhotos(existingMemory.photos || []);  // Ensure multiple photos are set correctly
+            setPhotos(existingMemory.photos || []);
         }
     }, [existingMemory]);
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        setPhotos((prevPhotos) => [...prevPhotos, ...files]);  // Add multiple photos
+        setPhotos((prevPhotos) => [...prevPhotos, ...files]);
     };
 
     const handleSave = () => {
@@ -23,12 +23,11 @@ const MemoryPopup = ({ marker, onClose, onSaveMemory, existingMemory }) => {
             return;
         }
 
-        // Pass memory data back to parent component for saving
         onSaveMemory({
             marker,
             note,
             photos,
-            isNew: !existingMemory // If it's a new memory, set isNew to true
+            isNew: !existingMemory
         });
 
         // Close the popup

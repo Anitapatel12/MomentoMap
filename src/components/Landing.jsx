@@ -18,13 +18,11 @@ const Landing = () => {
 
     return (
         <div className="landing-container">
-            {/* Navigation Bar */}
             <nav className="navbar">
                 <div className="logo">MomentoMap</div>
 
             </nav>
 
-            {/* Main Content */}
             <div className="content-wrapper">
                 <div className="text-section">
                     <h1>Welcome to <br /> <span className="highlight">MomentoMap</span></h1>
@@ -36,7 +34,6 @@ const Landing = () => {
                     <button className="signin-btn" onClick={() => navigate("/signin")}>Sign In</button>
                 </div>
 
-                {/* Image Slider */}
                 <div className="image-section">
                     <div className="slider-container">
                         {images.map((src, index) => (

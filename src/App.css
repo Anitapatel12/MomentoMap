@@ -40,25 +40,19 @@
 .read-the-docs {
   color: #888;
 }
-/* In App.css or index.css */
-/* Ensure body and html take full height */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* Ensure map container takes the full height and width */
 
-
-/* Make sure the markers are on top of the map */
 .leaflet-marker-pane {
-  z-index: 1000; /* Ensure markers appear above the map tiles */
+  z-index: 1000;
 }
 
-/* Ensure popups are on top of other map elements */
 .leaflet-popup {
-  z-index: 2000; /* Popups should appear above markers */
+  z-index: 2000;
 }
 
 .search-bar {
@@ -70,7 +64,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: rgba(255, 255, 255, 0.9); /* Transparent white background */
+  background-color: rgba(255, 255, 255, 0.9); 
   padding: 8px 12px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
